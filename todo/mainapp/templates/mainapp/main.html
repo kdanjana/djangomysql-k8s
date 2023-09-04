@@ -1,0 +1,27 @@
+{% extends 'mainapp/base.html' %}
+{% block title %}
+ Main Page
+{% endblock %}
+
+{% block content %}
+    <h2> Tasks Todo </h2>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+            {{ field }}
+            <button type="submit" name="submit"> Add </button>
+            {% if field.errors %}
+                {{ field.errors }}
+            {% endif %}
+        {% endfor %}
+    </form>
+    <ul>
+    {% for item in items_list %}
+        <li> {{ item.todo }}
+        <button> <a href="{% url 'mainapp:edittask' item.id %}">Edit </a></button>
+        <button> <a href="{% url 'mainapp:deletetask' item.id %}">Done </a></button>
+        </li>
+    {% endfor %}
+</ul>
+<button> <a href="{%url 'mainapp:listtasks' %}"> List Completed Tasks </a></button>
+{% endblock %}
