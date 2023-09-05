@@ -9,7 +9,8 @@
         {% csrf_token %}
         {% for field in form %}
             {{ field }}
-            <button type="submit" name="submit"> Add </button>
+            <button type="submit" name="submit"><u> Add </u></button>
+            <button> <a href="{% url 'mainapp:main' %}">Cancel </a></button>
             {% if field.errors %}
                 {{ field.errors }}
             {% endif %}
