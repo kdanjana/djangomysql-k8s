@@ -17,10 +17,10 @@
         {% endfor %}
     </form>
     <ul>
-    {% for item in items_list %}
-        <li> {{ item.todo }}
+    {% for task in tasks_list %}
+        <li> {{ task.todo }}
         <button> <a href="{% url 'mainapp:edittask' item.id %}">Edit </a></button>
-        <button> <a href="{% url 'mainapp:deletetask' item.id %}">Done </a></button>
+        <button> <a href="{% url 'mainapp:taskcomplete' item.id %}">Done </a></button>
         </li>
     {% endfor %}
 </ul>

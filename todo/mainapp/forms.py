@@ -1,22 +1,22 @@
 from django import forms
-from .models import Item
+from .models import Todo
 
 
 class TodoForm(forms.ModelForm):
     class Meta:
-        model = Item
-        fields = ["todo"]
+        model = Todo
+        fields = ["task"]
         labels = {
-            "todo": "Todo"
+            "task": "Task"
         }
         widgets = {
-            "todo": forms.TextInput(attrs={'class': 'myfieldclass'})
+            "task": forms.TextInput(attrs={'class': 'myfieldclass'})
         }
 
 
     def clean(self):
         super(TodoForm, self).clean()
-        todo = self.cleaned_data.get('todo')
-        if len(todo) < 3:
-            self._errors['todo'] = self.error_class([ 'Please enter todo item.'])
+        task = self.cleaned_data.get('task')
+        if len(task) < 3:
+            self._errors['task'] = self.error_class([ 'Please enter todo item.'])
         return self.cleaned_data

@@ -1,21 +1,21 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from django.http import HttpResponse
 from django.views.generic.list import ListView
-# Create your views here.
+
 
 from .forms import TodoForm
-from .models import Item
+from .models import Todo
 
+# Create your views here.
 
 class MainPageView(View):
     def get(self, request):
         new_todoform = TodoForm()
-        itemslist = Item.objects.filter(completed=False)
-        items_list = itemslist.order_by("-created_at")
+        taskslist = Todo.objects.filter(completed=False)
+        tasks_list = taskslist.order_by("-created_at")
         context = {
             "form": new_todoform,
-            "items_list": items_list
+            "tasks_list": tasks_list
         }
         return render(request, "mainapp/main.html", context)
 
@@ -23,45 +23,43 @@ class MainPageView(View):
     def post(self, request):
         submitted_todoform = TodoForm(request.POST)
         if submitted_todoform.is_valid():
-            #print(submitted_todoform.cleaned_data["todo"])
-            #print(submitted_todoform.cleaned_data.get("todo"))
             submitted_todoform.save()
             return redirect("mainapp:main")
         else:
             return render(request, "mainapp/main.html", {"form": submitted_todoform})
 
 
-def DeleteTask(request, item_id):
-    item = Item.objects.get(pk=item_id)
-    item.completed = True
-    item.save()
+def TaskCompleted(request, task_id):
+    task = Todo.objects.get(pk=task_id)
+    task.completed = True
+    task.save()
     return redirect("mainapp:main")
 
 
 class EditTaskView(View):
-    def get(self, request, item_id):
-        item = Item.objects.get(pk=item_id)
-        edit_todoform = TodoForm({"todo": item.todo})
+    def get(self, request, task_id):
+        todo_db = Todo.objects.get(pk=task_id)
+        edit_todoform = TodoForm({"task": todo_db.task})
         context = {
             "form": edit_todoform,
-            "item_id": item_id
+            "item_id": task_id
         }
         return render(request, "mainapp/edittask.html", context)
 
-    def post(self, request, item_id):
+    def post(self, request, task_id):
         edited_todoform = TodoForm(request.POST)
         if edited_todoform.is_valid():
-            new_todo = edited_todoform.cleaned_data.get('todo')
-            task = Item.objects.get(pk=item_id)
-            task.todo = new_todo
-            task.save()
+            editted_task = edited_todoform.cleaned_data.get('task')
+            task_from_db = Todo.objects.get(pk=task_id)
+            task_from_db.task = editted_task
+            task_from_db.save()
             return redirect("mainapp:main")
         else:
             return render(request,"mainapp/edittask.html", edited_todoform)
 
 
 class ListTasksView(ListView):
-    model = Item
+    model = Todo
     context_object_name = "tasks"
     template_name = "mainapp/listtasks.html"
     def get_queryset(self):
@@ -69,6 +67,6 @@ class ListTasksView(ListView):
         data = qs.filter(completed=True)
         return data
 
-def DeleteAll(request):
-    Item.objects.filter(completed=True).delete()
+def DeleteAllTasks(request):
+    Todo.objects.filter(completed=True).delete()
     return redirect("mainapp:main")
