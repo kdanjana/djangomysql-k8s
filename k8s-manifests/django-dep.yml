@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: django-c
-          image: kdanjana/todoapp:v3
+          image: kdanjana/djangotodo-mysql:v1
           ports:
             - containerPort: 8000
           env:
