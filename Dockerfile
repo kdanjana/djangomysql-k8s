@@ -1,22 +1,19 @@
-FROM python:3.8
+FROM python:3.9-alpine3.13
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
-# create root directory for our project in the container
-RUN mkdir /code
+COPY ./requirements.txt /tmp/requirements.txt
+COPY ./todo /app
+WORKDIR /app
+EXPOSE 8000 
 
+RUN python -m venv /py && \
+    /py/bin/pip install --upgrade pip && \
+    /py/bin/pip instal -r /tmp/requirements.txt && \
+    rm -rf /tmp && \
+    adduser --disabled-password --no-create-home django-user 
 
-# Set the working directory to /code
-WORKDIR /code
-# Copy the current directory contents into the container at /code
-COPY . /code/
+ENV PATH="/py/bin:$PATH"
 
-# installs and upgrades the pip version that is in the container.
-RUN pip install --upgrade pip
-
-
-# Install any needed packages specified in requirements.txt
-RUN pip install -r requirements.txt
-
-EXPOSE 8000
+USER django-user 
